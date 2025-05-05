@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using AVRouting;
 using MauiAppTempoAgora.Models;
+using Newtonsoft.Json.Linq;
 
 namespace MauiAppTempoAgora.Services
 {
@@ -19,15 +20,15 @@ namespace MauiAppTempoAgora.Services
             string url = $"https://api.openweanthermap.org/data/2.5/weather?" +
                          $"q={cidade}&units=metric&appid={chave}";
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient httpClient = new HttpClient())
             {
-                HttpReposeMessage resp = await client.GetAsync(url);
+                HttpResponseMessage response = await httpClient.GetAsync(url);
 
-                if (resp.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    string json = await resp.Content.ReadAsStringAsync();
+                    string json = await response.Content.ReadAsStringAsync();
 
-                    var rascunho = Object.Parse(json);
+                    JObject? rascunho = JObject.Parse(json);
 
                     DateTime time = new();
                     DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
