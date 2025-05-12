@@ -1,7 +1,5 @@
 ﻿using MauiAppTempoAgora.Models;
 using MauiAppTempoAgora.Services;
-using System;
-using System.Diagnostics;
 
 namespace MauiAppTempoAgora
 {
@@ -40,7 +38,7 @@ namespace MauiAppTempoAgora
 
                         wv_mapa.Source = mapa;
 
-                        Debug.WriteLine(mapa);
+                        //Debug.WriteLine(mapa);
 
                     }
                     else
