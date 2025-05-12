@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using MauiAppTempoAgora.Models;
+﻿using MauiAppTempoAgora.Models;
 using Newtonsoft.Json.Linq;
 
 namespace MauiAppTempoAgora.Services
@@ -15,20 +9,20 @@ namespace MauiAppTempoAgora.Services
         {
             Tempo? t = null;
 
-            string chave = "6135072afe7f6cec1537d5cb08a51a2";
+            string chave = "6135072afe7f6cec1537d5cb08a5a1a2";
 
-            string url = $"https://api.openweanthermap.org/data/2.5/weather?" +
+            string url = $"https://api.openweathermap.org/data/2.5/weather?" +
                          $"q={cidade}&units=metric&appid={chave}";
 
-            using (HttpClient httpClient = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await httpClient.GetAsync(url);
+                HttpResponseMessage resp = await client.GetAsync(url);
 
-                if (response.IsSuccessStatusCode)
+                if (resp.IsSuccessStatusCode)
                 {
-                    string json = await response.Content.ReadAsStringAsync();
+                    string json = await resp.Content.ReadAsStringAsync();
 
-                    JObject? rascunho = JObject.Parse(json);
+                    var rascunho = JObject.Parse(json);
 
                     DateTime time = new();
                     DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
@@ -39,7 +33,7 @@ namespace MauiAppTempoAgora.Services
                         lat = (double)rascunho["coord"]["lat"],
                         lon = (double)rascunho["coord"]["lon"],
                         description = (string)rascunho["weather"][0]["description"],
-                        main = (string)rascunho["weather"]["main"],
+                        main = (string)rascunho["weather"][0]["main"],
                         temp_min = (double)rascunho["main"]["temp_min"],
                         temp_max = (double)rascunho["main"]["temp_max"],
                         speed = (double)rascunho["wind"]["speed"],
@@ -47,8 +41,8 @@ namespace MauiAppTempoAgora.Services
                         sunrise = sunrise.ToString(),
                         sunset = sunset.ToString(),
                     }; // Fecha obj do Tempo.
-                } // Fecha if se o status do servidor foi de sucesso 
-            } // Fecha laço using
+                } // Fecha if se o status do servidor foi de sucesso
+            } // fecha laço using
 
             return t;
         }

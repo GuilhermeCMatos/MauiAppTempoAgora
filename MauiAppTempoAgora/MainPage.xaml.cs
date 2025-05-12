@@ -1,13 +1,12 @@
-﻿using System.Diagnostics;
-using MauiAppTempoAgora.Models;
+﻿using MauiAppTempoAgora.Models;
 using MauiAppTempoAgora.Services;
+using System;
+using System.Diagnostics;
 
 namespace MauiAppTempoAgora
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
-
         public MainPage()
         {
             InitializeComponent();
@@ -37,22 +36,25 @@ namespace MauiAppTempoAgora
                         string mapa = $"https://embed.windy.com/embed.html?" +
                                       $"type=map&location=coordinates&metricRain=mm&metricTemp=°C" +
                                       $"&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface" +
-                                      $"&lat={t.lat.ToString().Replace(",", ".")}&lon=" +
-                                      $"{t.lon.ToString().Replace(",", ".")}";
+                                      $"&lat={t.lat.ToString().Replace(",", ".")}&lon={t.lon.ToString().Replace(",", ".")}";
 
                         wv_mapa.Source = mapa;
 
                         Debug.WriteLine(mapa);
+
                     }
                     else
                     {
+
                         lbl_res.Text = "Sem dados de Previsão";
-                    }// fecha if t=null
+                    }
+
                 }
                 else
                 {
                     lbl_res.Text = "Preencha a cidade.";
-                }// fecha if string is null or empty
+                }
+
             }
             catch (Exception ex)
             {
@@ -67,19 +69,20 @@ namespace MauiAppTempoAgora
                 GeolocationRequest request = new GeolocationRequest(
                     GeolocationAccuracy.Medium,
                     TimeSpan.FromSeconds(10)
-                    );
+                );
 
                 Location? local = await Geolocation.Default.GetLocationAsync(request);
 
                 if (local != null)
                 {
                     string local_disp = $"Latitude: {local.Latitude} \n" +
-                                        $"Longitude: {local.Longitude} \n";
+                                        $"Longitude: {local.Longitude}";
 
-                    lbl_res.Text = local_disp;
+                    lbl_coords.Text = local_disp;
 
                     // pega nome da cidade que está nas coordenadas.
                     GetCidade(local.Latitude, local.Longitude);
+
                 }
                 else
                 {
@@ -123,5 +126,4 @@ namespace MauiAppTempoAgora
             }
         }
     }
-
 }
